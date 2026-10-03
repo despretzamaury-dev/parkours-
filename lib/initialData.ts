@@ -3,8 +3,8 @@ import { UserProfile, Homework, Grade, Reward, RewardRedemption } from './types'
 export const INITIAL_USERS: UserProfile[] = [
   {
     id: 'teacher-1',
-    name: 'Prof. Alexandre Martin',
-    email: 'alexandre.martin@parkours.fr',
+    name: 'Amaury Despretz',
+    email: 'amaury.despretz@parkours.fr',
     role: 'teacher',
     avatar: '👨‍🏫',
     points: 0,
@@ -12,7 +12,7 @@ export const INITIAL_USERS: UserProfile[] = [
     level: 10,
     streak: 0,
     badges: ['Enseignant Référent', 'Tuteur Parkours'],
-    classGroup: 'Tuteur / Professeur',
+    classGroup: 'Tuteur',
   },
   // UNIQUEMENT LES 5 ÉLÈVES DE 5ÈME DEMANDÉS
   {
@@ -82,59 +82,7 @@ export const INITIAL_USERS: UserProfile[] = [
   },
 ];
 
-export const INITIAL_HOMEWORK: Homework[] = [
-  {
-    id: 'hw-1',
-    title: 'Fiche d\'exercices : Fractions & Calcul mental',
-    subject: 'Mathématiques',
-    description: 'Effectuer les 5 exercices de simplification de fractions et problèmes de partage.',
-    dueDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
-    xpReward: 50,
-    assignedTo: ['all'],
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    submissions: {
-      'student-come': { status: 'todo' },
-      'student-adrien': { status: 'todo' },
-      'student-gustave': { status: 'todo' },
-      'student-barthelemy': { status: 'todo' },
-      'student-maxime': { status: 'todo' },
-    },
-  },
-  {
-    id: 'hw-2',
-    title: 'Compte-rendu TP : Les états de la matière & la masse volumique',
-    subject: 'Physique-Chimie',
-    description: 'Schématiser l\'expérience de distillation et répondre aux 3 questions de bilan.',
-    dueDate: new Date(Date.now() + 86400000 * 4).toISOString().split('T')[0],
-    xpReward: 60,
-    assignedTo: ['all'],
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-    submissions: {
-      'student-come': { status: 'todo' },
-      'student-adrien': { status: 'todo' },
-      'student-gustave': { status: 'todo' },
-      'student-barthelemy': { status: 'todo' },
-      'student-maxime': { status: 'todo' },
-    },
-  },
-  {
-    id: 'hw-3',
-    title: 'Analyse de texte : Fables de La Fontaine (5ème)',
-    subject: 'Français',
-    description: 'Rédiger un résumé en 8 lignes et dégager la morale de la fable étudiée.',
-    dueDate: new Date(Date.now() + 86400000 * 1).toISOString().split('T')[0],
-    xpReward: 45,
-    assignedTo: ['all'],
-    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-    submissions: {
-      'student-come': { status: 'todo' },
-      'student-adrien': { status: 'todo' },
-      'student-gustave': { status: 'todo' },
-      'student-barthelemy': { status: 'todo' },
-      'student-maxime': { status: 'todo' },
-    },
-  },
-];
+export const INITIAL_HOMEWORK: Homework[] = [];
 
 export const INITIAL_GRADES: Grade[] = [];
 

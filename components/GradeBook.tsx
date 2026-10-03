@@ -87,30 +87,30 @@ export const GradeBook: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 font-mono-custom">
+    <div className="space-y-8 font-sans">
       {/* HEADER CARD */}
-      <div className="bg-white border-2 border-black p-6 sm:p-8 shadow-[5px_5px_0px_#000000]">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b-2 border-black">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-200">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-slate-600 block mb-1">
+            <span className="text-xs font-bold tracking-widest text-slate-600 block mb-1">
               CARNET ACADÉMIQUE • TUTORAT
             </span>
-            <h1 className="font-bebas text-4xl sm:text-5xl font-black text-black tracking-wide leading-none uppercase">
+            <h1 className="font-semibold tracking-tight text-4xl sm:text-5xl font-bold text-black tracking-wide leading-none">
               CARNET DE NOTES
             </h1>
             <p className="text-xs text-slate-700 font-bold mt-2">
-              ÉLÈVE CONCERNÉ : <span className="text-black font-extrabold uppercase">{targetStudent.name}</span> ({targetStudent.classGroup})
+              ÉLÈVE CONCERNÉ : <span className="text-black font-semibold">{targetStudent.name}</span> ({targetStudent.classGroup})
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             {isTeacher && (
-              <div className="flex items-center gap-2 bg-white border-2 border-black p-2 shadow-[3px_3px_0px_#000]">
-                <span className="text-xs font-bold uppercase">SÉLECTIONNER :</span>
+              <div className="flex items-center gap-2 bg-white border border-slate-200 p-2 shadow-sm">
+                <span className="text-xs font-bold">SÉLECTIONNER :</span>
                 <select
                   value={selectedStudentId}
                   onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="bg-white text-xs font-bold text-black focus:outline-none cursor-pointer uppercase"
+                  className="bg-white text-xs font-bold text-black focus:outline-none cursor-pointer"
                 >
                   {users
                     .filter((u) => u.role === 'student')
@@ -136,35 +136,35 @@ export const GradeBook: React.FC = () => {
 
         {/* STATS OVERVIEW CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-          <div className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#FF4D00]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 block">
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+            <span className="text-[11px] font-bold tracking-wider text-slate-600 block">
               MOYENNE GÉNÉRALE
             </span>
-            <div className="font-bebas text-4xl font-black text-black mt-1">
+            <div className="font-semibold tracking-tight text-4xl font-bold text-black mt-1">
               {overallAverage ? `${overallAverage} / 20` : 'AUCUNE NOTE'}
             </div>
-            <p className="text-xs font-bold text-slate-700 mt-1 uppercase">
+            <p className="text-xs font-bold text-slate-700 mt-1">
               ÉVALUATION PÉDAGOGIQUE
             </p>
           </div>
 
-          <div className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#000000]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 block">
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+            <span className="text-[11px] font-bold tracking-wider text-slate-600 block">
               TOTAL ÉVALUATIONS
             </span>
-            <div className="font-bebas text-4xl font-black text-black mt-1">
+            <div className="font-semibold tracking-tight text-4xl font-bold text-black mt-1">
               {studentGrades.length} <span className="text-lg text-slate-600">NOTES</span>
             </div>
-            <p className="text-xs font-bold text-slate-700 mt-1 uppercase">
+            <p className="text-xs font-bold text-slate-700 mt-1">
               ENREGISTRÉES EN BASE
             </p>
           </div>
 
-          <div className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#10B981]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 block">
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+            <span className="text-[11px] font-bold tracking-wider text-slate-600 block">
               APPRÉCIATION GLOBALE
             </span>
-            <div className="font-bebas text-2xl font-black text-emerald-800 mt-1 uppercase">
+            <div className="font-semibold tracking-tight text-2xl font-bold text-emerald-800 mt-1">
               {overallAverage
                 ? Number(overallAverage) >= 16
                   ? 'EXCELLENT WORK 🎉'
@@ -175,15 +175,15 @@ export const GradeBook: React.FC = () => {
                   : 'PROGRESSION EN COURS 💪'
                 : 'EN ATTENTE D\'ÉVALUATION'}
             </div>
-            <p className="text-xs font-bold text-slate-700 mt-1 uppercase">SUIVI PAR LE TUTEUR</p>
+            <p className="text-xs font-bold text-slate-700 mt-1">SUIVI PAR LE TUTEUR</p>
           </div>
         </div>
       </div>
 
       {/* SUBJECT AVERAGES BARS */}
       {subjectAverages.length > 0 && (
-        <div className="bg-white border-2 border-black p-6 shadow-[5px_5px_0px_#000000] space-y-4">
-          <h3 className="font-bebas text-2xl font-black text-black uppercase">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+          <h3 className="font-semibold tracking-tight text-2xl font-bold text-black">
             MOYENNES PAR MATIÈRE
           </h3>
 
@@ -192,13 +192,13 @@ export const GradeBook: React.FC = () => {
               const numAvg = Number(item.avg);
               const percentage = (numAvg / 20) * 100;
               return (
-                <div key={item.subject} className="border-2 border-black p-4 bg-[#FAF7F2]">
-                  <div className="flex items-center justify-between text-xs font-bold uppercase mb-2">
+                <div key={item.subject} className="border border-slate-200 p-4 bg-slate-50">
+                  <div className="flex items-center justify-between text-xs font-bold mb-2">
                     <span>{item.subject}</span>
-                    <span className="font-bebas text-xl font-black text-black">{item.avg} / 20</span>
+                    <span className="font-semibold tracking-tight text-xl font-bold text-black">{item.avg} / 20</span>
                   </div>
 
-                  <div className="w-full h-3 bg-white border-2 border-black overflow-hidden">
+                  <div className="w-full h-3 bg-white border border-slate-200 overflow-hidden">
                     <div
                       className="h-full bg-black"
                       style={{ width: `${percentage}%` }}
@@ -212,20 +212,20 @@ export const GradeBook: React.FC = () => {
       )}
 
       {/* DETAILED TABLE */}
-      <div className="bg-white border-2 border-black p-6 shadow-[5px_5px_0px_#000000] space-y-4">
-        <h3 className="font-bebas text-2xl font-black text-black uppercase">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+        <h3 className="font-semibold tracking-tight text-2xl font-bold text-black">
           HISTORIQUE DÉTAILLÉ DES NOTES
         </h3>
 
         {studentGrades.length === 0 ? (
-          <div className="py-8 text-center text-xs font-bold uppercase text-slate-600">
+          <div className="py-8 text-center text-xs font-bold text-slate-600">
             AUCUNE NOTE ENREGISTRÉE POUR LE MOMENT POUR CET ÉLÈVE.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-bold border-collapse">
               <thead>
-                <tr className="border-b-2 border-black text-black uppercase">
+                <tr className="border-b border-slate-200 text-black">
                   <th className="pb-3">DATE</th>
                   <th className="pb-3">MATIÈRE</th>
                   <th className="pb-3">INTITULÉ DE L&apos;ÉVALUATION</th>
@@ -235,18 +235,18 @@ export const GradeBook: React.FC = () => {
                   {isTeacher && <th className="pb-3 text-right">ACTION</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y border-black">
+              <tbody className="divide-y border-slate-200">
                 {studentGrades.map((g) => (
-                  <tr key={g.id} className="hover:bg-[#FAF7F2]">
-                    <td className="py-3 font-mono-custom text-slate-700">
+                  <tr key={g.id} className="hover:bg-slate-50">
+                    <td className="py-3 font-sans text-slate-700">
                       {new Date(g.date).toLocaleDateString('fr-FR')}
                     </td>
                     <td className="py-3">
                       <span className="neo-badge bg-white">{g.subject}</span>
                     </td>
-                    <td className="py-3 font-extrabold uppercase text-black">{g.title}</td>
+                    <td className="py-3 font-semibold text-black">{g.title}</td>
                     <td className="py-3 text-center">x{g.coeff}</td>
-                    <td className="py-3 text-center font-bebas text-2xl font-black text-black">
+                    <td className="py-3 text-center font-semibold tracking-tight text-2xl font-bold text-black">
                       {g.grade} / {g.maxGrade}
                     </td>
                     <td className="py-3 italic text-slate-800">
@@ -256,7 +256,7 @@ export const GradeBook: React.FC = () => {
                       <td className="py-3 text-right">
                         <button
                           onClick={() => deleteGrade(g.id)}
-                          className="text-black hover:text-[#FF4D00] p-1"
+                          className="text-black hover:text-blue-600 p-1"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -272,15 +272,15 @@ export const GradeBook: React.FC = () => {
 
       {/* MODAL: ADD GRADE */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono-custom">
-          <div className="bg-white border-2 border-black w-full max-w-lg p-6 shadow-[8px_8px_0px_#000000] space-y-4">
-            <div className="flex items-center justify-between border-b-2 border-black pb-3">
-              <h2 className="font-bebas text-2xl font-black text-black">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-sans">
+          <div className="bg-white border border-slate-200 w-full max-w-lg p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h2 className="font-semibold tracking-tight text-2xl font-bold text-black">
                 SAISIR UNE NOUVELLE NOTE
               </h2>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-black font-bold text-xl hover:text-[#FF4D00]"
+                className="text-black font-bold text-xl hover:text-blue-600"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -288,13 +288,13 @@ export const GradeBook: React.FC = () => {
 
             <form onSubmit={handleAddGrade} className="space-y-4">
               <div>
-                <label className="block text-xs font-extrabold uppercase mb-1">
+                <label className="block text-xs font-semibold mb-1">
                   ÉLÈVE CONCERNÉ *
                 </label>
                 <select
                   value={targetStudentId}
                   onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-black text-xs font-bold focus:outline-none uppercase"
+                  className="w-full px-3 py-2 border border-slate-200 text-xs font-bold focus:outline-none"
                 >
                   {users
                     .filter((u) => u.role === 'student')
@@ -308,11 +308,11 @@ export const GradeBook: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-extrabold uppercase mb-1">MATIÈRE *</label>
+                  <label className="block text-xs font-semibold mb-1">MATIÈRE *</label>
                   <select
                     value={newSubject}
                     onChange={(e) => setNewSubject(e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-black text-xs font-bold focus:outline-none uppercase"
+                    className="w-full px-3 py-2 border border-slate-200 text-xs font-bold focus:outline-none"
                   >
                     <option value="Mathématiques">MATHÉMATIQUES</option>
                     <option value="Physique-Chimie">PHYSIQUE-CHIMIE</option>
@@ -324,21 +324,21 @@ export const GradeBook: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-extrabold uppercase mb-1">INTITULÉ *</label>
+                  <label className="block text-xs font-semibold mb-1">INTITULÉ *</label>
                   <input
                     type="text"
                     required
                     placeholder="EX: DS CHAPITRE 4"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-black text-xs font-bold focus:outline-none uppercase"
+                    className="w-full px-3 py-2 border border-slate-200 text-xs font-bold focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-extrabold uppercase mb-1">NOTE SUR 20 *</label>
+                  <label className="block text-xs font-semibold mb-1">NOTE SUR 20 *</label>
                   <input
                     type="number"
                     min="0"
@@ -347,12 +347,12 @@ export const GradeBook: React.FC = () => {
                     required
                     value={newGradeVal}
                     onChange={(e) => setNewGradeVal(Number(e.target.value))}
-                    className="w-full px-3 py-2 border-2 border-black font-bebas text-2xl font-black focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-200 font-semibold tracking-tight text-2xl font-bold focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-extrabold uppercase mb-1">COEFFICIENT *</label>
+                  <label className="block text-xs font-semibold mb-1">COEFFICIENT *</label>
                   <input
                     type="number"
                     min="1"
@@ -360,23 +360,23 @@ export const GradeBook: React.FC = () => {
                     required
                     value={newCoeff}
                     onChange={(e) => setNewCoeff(Number(e.target.value))}
-                    className="w-full px-3 py-2 border-2 border-black text-xs font-bold focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-200 text-xs font-bold focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-extrabold uppercase mb-1">COMMENTAIRE</label>
+                <label className="block text-xs font-semibold mb-1">COMMENTAIRE</label>
                 <textarea
                   rows={3}
                   placeholder="Appréciation du tuteur..."
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-black text-xs font-bold focus:outline-none resize-none"
+                  className="w-full px-3 py-2 border border-slate-200 text-xs font-bold focus:outline-none resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t-2 border-black">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}

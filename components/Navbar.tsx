@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useParkours } from '../lib/context';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Settings } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -14,115 +14,120 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
 
   const isTeacher = currentUser.role === 'teacher';
 
-  const navItems = [
-    { id: 'homework', label: 'DEVOIRS' },
-    { id: 'grades', label: 'CARNET DE NOTES' },
-    { id: 'leaderboard', label: 'CLASSEMENT' },
-    { id: 'rewards', label: 'RÉCOMPENSES' },
-    ...(isTeacher ? [{ id: 'admin', label: 'ESPACE PROF' }] : []),
-  ];
+  const navItems = isTeacher
+    ? [
+        { id: 'admin', label: 'Espace Tuteur' },
+        { id: 'homework', label: 'Gestion Devoirs' },
+        { id: 'grades', label: 'Gestion Notes' },
+      ]
+    : [
+        { id: 'homework', label: 'Mes devoirs' },
+        { id: 'grades', label: 'Mon carnet' },
+        { id: 'leaderboard', label: 'Classement' },
+      ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b-2 border-black shadow-xs">
+    <header className="sticky top-0 z-50 bg-[#1E3A5F] border-b border-[#173354] shadow-sm text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo Brand */}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-[#FF4D00] border-2 border-black flex items-center justify-center font-bebas text-2xl font-black text-white shadow-[3px_3px_0px_#000000]">
-              PH
+        <div className="flex flex-col md:flex-row items-center justify-between py-3 md:h-16 md:py-0">
+          
+          <div className="flex items-center gap-8 w-full md:w-auto mb-4 md:mb-0 justify-between md:justify-start">
+            {/* Logo Brand */}
+            <div className="flex items-center gap-2 cursor-pointer">
+              <span className="font-bold text-2xl tracking-tight">T. Parkours</span>
             </div>
-            <div>
-              <span className="font-bebas text-3xl font-black tracking-wide text-black block leading-none">
-                PARKOURS HUB
-              </span>
-              <span className="font-mono-custom text-[10px] uppercase tracking-widest text-slate-600 font-bold block mt-0.5">
-                CLASSE DE 5ÈME • TUTORAT
-              </span>
-            </div>
-          </div>
 
-          {/* Navigation Items (Desktop) */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => {
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`font-bebas text-lg tracking-wider transition-all relative py-2 ${
-                    isActive
-                      ? 'text-black font-black border-b-4 border-[#FF4D00]'
-                      : 'text-slate-600 hover:text-black font-bold'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </nav>
+            {/* Navigation Items (Desktop) */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-[#173354] text-white'
+                        : 'text-slate-300 hover:bg-[#173354] hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
 
           {/* Profile Selector */}
           <div className="flex items-center gap-3">
-            <div className="relative flex items-center bg-white border-2 border-black shadow-[3px_3px_0px_#000000] px-3 py-1.5 font-mono-custom text-xs font-bold">
-              <span className="mr-2 text-base">{currentUser.avatar}</span>
-              <div className="mr-3">
-                <span className="font-bebas text-base font-black tracking-wide uppercase text-black block leading-tight">
-                  {currentUser.name}
-                </span>
-                <span className="text-[9px] text-[#FF4D00] font-mono-custom font-extrabold uppercase block">
-                  {isTeacher ? 'PROFESSEUR' : `5ÈME • ${currentUser.points} PTS`}
-                </span>
-              </div>
-
+            <div className="flex items-center bg-[#173354] rounded-full px-3 py-1 text-sm border border-[#1E3A5F]">
+              <span className="mr-2">{currentUser.avatar}</span>
               <select
                 value={currentUser.id}
-                onChange={(e) => setCurrentUserId(e.target.value)}
-                aria-label="Changer de profil élève ou professeur"
-                className="bg-white text-xs font-mono-custom font-bold text-black border-l-2 border-black pl-2 py-1 focus:outline-none cursor-pointer"
+                onChange={(e) => {
+                  const newUserId = e.target.value;
+                  setCurrentUserId(newUserId);
+                  const newRole = users.find((u) => u.id === newUserId)?.role;
+                  if (newRole === 'teacher') setActiveTab('admin');
+                  else if (activeTab === 'admin') setActiveTab('homework');
+                }}
+                aria-label="Changer de profil élève ou tuteur"
+                className="bg-transparent text-white font-medium focus:outline-none cursor-pointer appearance-none outline-none"
               >
-                <optgroup label="👨‍🏫 ENSEIGNANT">
+                <optgroup label="Enseignants">
                   {users
                     .filter((u) => u.role === 'teacher')
                     .map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.name} (Tuteur)
+                      <option key={u.id} value={u.id} className="text-black">
+                        {u.name}
                       </option>
                     ))}
                 </optgroup>
-                <optgroup label="🎓 ÉLÈVES DE 5ÈME">
+                <optgroup label="Élèves">
                   {users
                     .filter((u) => u.role === 'student')
                     .map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.name} (5ème - {u.points} pts)
+                      <option key={u.id} value={u.id} className="text-black">
+                        {u.name}
                       </option>
                     ))}
                 </optgroup>
               </select>
             </div>
 
-            <button
-              onClick={resetToDemoData}
-              title="Réinitialiser les données"
-              className="p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#FF4D00] hover:text-white transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
+            <div className="relative group">
+              <button
+                className="p-2 rounded-full hover:bg-[#173354] text-slate-300 hover:text-white transition-colors"
+                aria-label="Réglages"
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+              
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+                <button
+                  onClick={resetToDemoData}
+                  className="w-full text-left px-4 py-3 text-sm flex items-center gap-2 text-red-600 hover:bg-red-50 transition-colors font-medium"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  Réinitialiser Démo
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="flex md:hidden overflow-x-auto gap-2 py-2 border-t-2 border-black no-scrollbar">
+        <div className="flex md:hidden overflow-x-auto gap-1 pb-3 no-scrollbar">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`font-bebas text-sm whitespace-nowrap px-3 py-1 border-2 border-black ${
+                className={`whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   isActive
-                    ? 'bg-[#FF4D00] text-white shadow-[2px_2px_0px_#000000]'
-                    : 'bg-white text-black'
+                    ? 'bg-[#173354] text-white'
+                    : 'text-slate-300 hover:bg-[#173354] hover:text-white'
                 }`}
               >
                 {item.label}

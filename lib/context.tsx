@@ -36,12 +36,12 @@ interface ParkoursContextType {
 const ParkoursContext = createContext<ParkoursContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  USERS: 'parkours_users_v4',
-  HOMEWORK: 'parkours_homework_v4',
-  GRADES: 'parkours_grades_v4',
-  REWARDS: 'parkours_rewards_v4',
-  REDEMPTIONS: 'parkours_redemptions_v4',
-  CURRENT_USER_ID: 'parkours_current_user_id_v4',
+  USERS: 'parkours_users_v5',
+  HOMEWORK: 'parkours_homework_v5',
+  GRADES: 'parkours_grades_v5',
+  REWARDS: 'parkours_rewards_v5',
+  REDEMPTIONS: 'parkours_redemptions_v5',
+  CURRENT_USER_ID: 'parkours_current_user_id_v5',
 };
 
 export function ParkoursProvider({ children }: { children: React.ReactNode }) {
@@ -63,11 +63,17 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
       const storedRedemptions = localStorage.getItem(STORAGE_KEYS.REDEMPTIONS);
       const storedUserId = localStorage.getItem(STORAGE_KEYS.CURRENT_USER_ID);
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedUsers) setUsers(JSON.parse(storedUsers));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedHomework) setHomeworks(JSON.parse(storedHomework));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedGrades) setGrades(JSON.parse(storedGrades));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedRewards) setRewards(JSON.parse(storedRewards));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedRedemptions) setRedemptions(JSON.parse(storedRedemptions));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedUserId) setCurrentUserIdState(storedUserId);
     } catch (e) {
       console.error('Failed to load local storage:', e);

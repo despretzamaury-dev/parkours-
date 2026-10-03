@@ -20,8 +20,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PARKOURS HUB | Plateforme de Tutorat",
-  description: "Plateforme interactive de tutorat pour la gestion des devoirs, le carnet de notes, la boutique de récompenses et le classement des élèves.",
+  title: "T. Parkours | Plateforme de Tutorat",
+  description: "Plateforme interactive de tutorat pour la gestion des devoirs, le carnet de notes et le classement des élèves.",
 };
 
 export default function RootLayout({

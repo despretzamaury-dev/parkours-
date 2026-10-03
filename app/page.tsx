@@ -6,7 +6,6 @@ import { Navbar } from '../components/Navbar';
 import { HomeworkBoard } from '../components/HomeworkBoard';
 import { GradeBook } from '../components/GradeBook';
 import { Leaderboard } from '../components/Leaderboard';
-import { RewardsStore } from '../components/RewardsStore';
 import { AdminPanel } from '../components/AdminPanel';
 
 function MainContent() {
@@ -14,7 +13,7 @@ function MainContent() {
   const { currentUser } = useParkours();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-[#1E3A5F] selection:text-white">
       {/* Header Bar */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -23,19 +22,18 @@ function MainContent() {
         {activeTab === 'homework' && <HomeworkBoard />}
         {activeTab === 'grades' && <GradeBook />}
         {activeTab === 'leaderboard' && <Leaderboard />}
-        {activeTab === 'rewards' && <RewardsStore />}
         {activeTab === 'admin' && <AdminPanel setActiveTab={setActiveTab} />}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 bg-slate-900/60 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-600 mt-8">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-300">Parkours Hub</span>
-            <span>• Plateforme de Tutorat & Suivi des Devoirs</span>
+            <span className="font-semibold text-slate-800">T. Parkours</span>
+            <span>• Plateforme de Tutorat</span>
           </div>
-          <div className="text-slate-400">
-            Connecté en tant que : <span className="text-indigo-400 font-semibold">{currentUser.name}</span> ({currentUser.role === 'teacher' ? 'Prof' : 'Élève'})
+          <div>
+            Connecté en tant que : <span className="font-semibold text-[#1E3A5F] bg-slate-100 px-2 py-1 rounded-md">{currentUser.name}</span> ({currentUser.role === 'teacher' ? 'Tuteur' : 'Élève'})
           </div>
         </div>
       </footer>

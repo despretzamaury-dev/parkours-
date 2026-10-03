@@ -27,7 +27,7 @@ export interface HomeworkSubmission {
 export interface Homework {
   id: string;
   title: string;
-  subject: 'Mathématiques' | 'Physique-Chimie' | 'Français' | 'Anglais' | 'Histoire-Géo' | 'SVT';
+  subject: 'Mathématiques' | 'Physique-Chimie' | 'Français' | 'Anglais' | 'Histoire-Géo' | 'SVT' | 'Maths' | 'Physique' | 'Allemand' | 'Techno' | 'Musique';
   description: string;
   dueDate: string;
   xpReward: number;
