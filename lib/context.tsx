@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserProfile, Homework, Grade, Reward, RewardRedemption, TutorSession } from './types';
+import { UserProfile, Homework, Grade, Reward, RewardRedemption, TutorSession, TutorSchedule } from './types';
 import {
   INITIAL_USERS,
   INITIAL_HOMEWORK,
@@ -18,6 +18,7 @@ interface ParkoursContextType {
   rewards: Reward[];
   redemptions: RewardRedemption[];
   tutorSessions: TutorSession[];
+  tutorSchedules: TutorSchedule[];
   setCurrentUserId: (id: string) => void;
   submitHomework: (homeworkId: string, studentId: string, submissionText: string) => void;
   gradeHomework: (homeworkId: string, studentId: string, grade: number, feedback: string) => void;
@@ -32,6 +33,8 @@ interface ParkoursContextType {
   rejectRedemption: (redemptionId: string) => void;
   addBonusPoints: (studentId: string, points: number, xp: number) => void;
   addTutorSession: (session: Omit<TutorSession, 'id'>) => void;
+  addTutorSchedule: (schedule: Omit<TutorSchedule, 'id'>) => void;
+  deleteTutorSchedule: (id: string) => void;
   resetToDemoData: () => void;
 }
 
@@ -45,6 +48,7 @@ const STORAGE_KEYS = {
   REDEMPTIONS: 'parkours_redemptions_v5',
   CURRENT_USER_ID: 'parkours_current_user_id_v5',
   TUTOR_SESSIONS: 'parkours_tutor_sessions_v5',
+  TUTOR_SCHEDULES: 'parkours_tutor_schedules_v5',
 };
 
 export function ParkoursProvider({ children }: { children: React.ReactNode }) {
@@ -52,9 +56,9 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
   const [homeworks, setHomeworks] = useState<Homework[]>(INITIAL_HOMEWORK);
   const [grades, setGrades] = useState<Grade[]>(INITIAL_GRADES);
   const [rewards, setRewards] = useState<Reward[]>(INITIAL_REWARDS);
-  const [redemptions,
-        tutorSessions, setRedemptions] = useState<RewardRedemption[]>(INITIAL_REDEMPTIONS);
+  const [redemptions, setRedemptions] = useState<RewardRedemption[]>(INITIAL_REDEMPTIONS);
   const [tutorSessions, setTutorSessions] = useState<TutorSession[]>([]);
+  const [tutorSchedules, setTutorSchedules] = useState<TutorSchedule[]>([]);
   const [currentUserId, setCurrentUserIdState] = useState<string>('student-come');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -68,6 +72,7 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
       const storedRedemptions = localStorage.getItem(STORAGE_KEYS.REDEMPTIONS);
       const storedUserId = localStorage.getItem(STORAGE_KEYS.CURRENT_USER_ID);
       const storedTutorSessions = localStorage.getItem(STORAGE_KEYS.TUTOR_SESSIONS);
+      const storedTutorSchedules = localStorage.getItem(STORAGE_KEYS.TUTOR_SCHEDULES);
 
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedUsers) setUsers(JSON.parse(storedUsers));
@@ -82,6 +87,7 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (storedUserId) setCurrentUserIdState(storedUserId);
       if (storedTutorSessions) setTutorSessions(JSON.parse(storedTutorSessions));
+      if (storedTutorSchedules) setTutorSchedules(JSON.parse(storedTutorSchedules));
     } catch (e) {
       console.error('Failed to load local storage:', e);
     } finally {
@@ -100,11 +106,11 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(STORAGE_KEYS.REDEMPTIONS, JSON.stringify(redemptions));
       localStorage.setItem(STORAGE_KEYS.CURRENT_USER_ID, currentUserId);
       localStorage.setItem(STORAGE_KEYS.TUTOR_SESSIONS, JSON.stringify(tutorSessions));
+      localStorage.setItem(STORAGE_KEYS.TUTOR_SCHEDULES, JSON.stringify(tutorSchedules));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
-  }, [users, homeworks, grades, rewards, redemptions,
-        tutorSessions, currentUserId, tutorSessions, isLoaded]);
+  }, [users, homeworks, grades, rewards, redemptions, tutorSessions, tutorSchedules, currentUserId, isLoaded]);
 
   const currentUser = users.find((u) => u.id === currentUserId) || users[0];
 
@@ -318,6 +324,19 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
     setTutorSessions(prev => [created, ...prev]);
   };
 
+  
+  const addTutorSchedule = (schedule: Omit<TutorSchedule, 'id'>) => {
+    const created = {
+      ...schedule,
+      id: `sched-${Date.now()}`
+    };
+    setTutorSchedules(prev => [...prev, created]);
+  };
+
+  const deleteTutorSchedule = (id: string) => {
+    setTutorSchedules(prev => prev.filter(s => s.id !== id));
+  };
+
   const resetToDemoData = () => {
     setUsers(INITIAL_USERS);
     setHomeworks(INITIAL_HOMEWORK);
@@ -325,6 +344,7 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
     setRewards(INITIAL_REWARDS);
     setRedemptions(INITIAL_REDEMPTIONS);
     setTutorSessions([]);
+    setTutorSchedules([]);
     setCurrentUserIdState('student-1');
     localStorage.clear();
   };
@@ -339,6 +359,7 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
         rewards,
         redemptions,
         tutorSessions,
+        tutorSchedules,
         setCurrentUserId,
         submitHomework,
         gradeHomework,
@@ -352,6 +373,8 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
         approveRedemption,
         rejectRedemption,
         addTutorSession,
+        addTutorSchedule,
+        deleteTutorSchedule,
         addBonusPoints,
         resetToDemoData,
       }}

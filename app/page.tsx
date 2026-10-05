@@ -3,14 +3,19 @@
 import React, { useState } from 'react';
 import { ParkoursProvider, useParkours } from '../lib/context';
 import { Navbar } from '../components/Navbar';
-import { HomeworkBoard } from '../components/HomeworkBoard';
-import { GradeBook } from '../components/GradeBook';
-import { Leaderboard } from '../components/Leaderboard';
 import { AdminPanel } from '../components/AdminPanel';
+import { Agenda } from '../components/Agenda';
+import { Remuneration } from '../components/Remuneration';
+import { Login } from '../components/Login';
 
 function MainContent() {
-  const [activeTab, setActiveTab] = useState<string>('homework');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('admin');
   const { currentUser } = useParkours();
+
+  if (!isAuthenticated) {
+    return <Login onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-[#1E3A5F] selection:text-white">
@@ -19,10 +24,9 @@ function MainContent() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'homework' && <HomeworkBoard />}
-        {activeTab === 'grades' && <GradeBook />}
-        {activeTab === 'leaderboard' && <Leaderboard />}
         {activeTab === 'admin' && <AdminPanel setActiveTab={setActiveTab} />}
+        {activeTab === 'agenda' && <Agenda />}
+        {activeTab === 'remuneration' && <Remuneration />}
       </main>
 
       {/* Footer */}

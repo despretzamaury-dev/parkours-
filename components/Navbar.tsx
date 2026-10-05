@@ -12,19 +12,11 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const { currentUser, users, setCurrentUserId, resetToDemoData } = useParkours();
 
-  const isTeacher = currentUser.role === 'teacher';
-
-  const navItems = isTeacher
-    ? [
-        { id: 'admin', label: 'Espace Tuteur' },
-        { id: 'homework', label: 'Gestion Devoirs' },
-        { id: 'grades', label: 'Gestion Notes' },
-      ]
-    : [
-        { id: 'homework', label: 'Mes devoirs' },
-        { id: 'grades', label: 'Mon carnet' },
-        { id: 'leaderboard', label: 'Classement' },
-      ];
+  const navItems = [
+    { id: 'admin', label: 'Espace Tuteur' },
+    { id: 'agenda', label: 'Agenda' },
+    { id: 'remuneration', label: 'Rémunération' },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-[#1E3A5F] border-b border-[#173354] shadow-sm text-white">
@@ -60,39 +52,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
 
           {/* Profile Selector */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-[#173354] rounded-full px-3 py-1 text-sm border border-[#1E3A5F]">
-              <span className="mr-2">{currentUser.avatar}</span>
-              <select
-                value={currentUser.id}
-                onChange={(e) => {
-                  const newUserId = e.target.value;
-                  setCurrentUserId(newUserId);
-                  const newRole = users.find((u) => u.id === newUserId)?.role;
-                  if (newRole === 'teacher') setActiveTab('admin');
-                  else if (activeTab === 'admin') setActiveTab('homework');
-                }}
-                aria-label="Changer de profil élève ou tuteur"
-                className="bg-transparent text-white font-medium focus:outline-none cursor-pointer appearance-none outline-none"
-              >
-                <optgroup label="Enseignants">
-                  {users
-                    .filter((u) => u.role === 'teacher')
-                    .map((u) => (
-                      <option key={u.id} value={u.id} className="text-black">
-                        {u.name}
-                      </option>
-                    ))}
-                </optgroup>
-                <optgroup label="Élèves">
-                  {users
-                    .filter((u) => u.role === 'student')
-                    .map((u) => (
-                      <option key={u.id} value={u.id} className="text-black">
-                        {u.name}
-                      </option>
-                    ))}
-                </optgroup>
-              </select>
+            <div className="flex items-center gap-2 bg-[#173354] rounded-full px-4 py-2 text-sm border border-[#1E3A5F]">
+              <span className="text-lg">{currentUser.avatar}</span>
+              <span className="font-semibold">{currentUser.name}</span>
             </div>
 
             <div className="relative group">

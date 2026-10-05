@@ -69,3 +69,18 @@ export interface Reward {
   category: 'Privilèges' | 'Bonus' | 'Cadeaux' | 'Activités';
   stock: number;
 }
+
+export interface TutorSession {
+  id: string;
+  date: string;
+  durationHours: number;
+  remuneration: number;
+  reportText: string;
+}
+
+export interface TutorSchedule {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+}

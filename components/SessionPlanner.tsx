@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useParkours } from '../lib/context';
-import { CheckCircle2, Minus } from 'lucide-react';
+import { CheckCircle2, Minus, FileText } from 'lucide-react';
 
 const SUBJECTS = [
   'Maths',
@@ -17,17 +17,17 @@ const SUBJECTS = [
 ];
 
 export const SessionPlanner: React.FC = () => {
-  const { users, addHomework } = useParkours();
+  const { users, addBonusPoints, addTutorSession } = useParkours();
   const students = users.filter((u) => u.role === 'student');
 
-  // No subjects selected by default
+  const [sessionDate, setSessionDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [sessionDuration, setSessionDuration] = useState<number>(1.5); // 1h30
+
   const [activeSubjects, setActiveSubjects] = useState<string[]>([]);
-  
-  // State: subject -> task string
   const [classTasks, setClassTasks] = useState<Record<string, string>>({});
-  
-  // State: studentId -> subject -> status ('none' | 'partial' | 'done')
   const [studentProgress, setStudentProgress] = useState<Record<string, Record<string, 'none' | 'partial' | 'done'>>>({});
+  const [studentBehavior, setStudentBehavior] = useState<Record<string, string>>({});
+  const [report, setReport] = useState<string | null>(null);
   
   const [toastMsg, setToastMsg] = useState('');
 
@@ -41,6 +41,13 @@ export const SessionPlanner: React.FC = () => {
     setClassTasks(prev => ({
       ...prev,
       [subject]: value
+    }));
+  };
+
+  const handleBehaviorChange = (studentId: string, value: string) => {
+    setStudentBehavior(prev => ({
+      ...prev,
+      [studentId]: value
     }));
   };
 
@@ -62,24 +69,42 @@ export const SessionPlanner: React.FC = () => {
     });
   };
 
-  const handlePlanSession = () => {
-    let homeworkCount = 0;
-    
-    Object.entries(classTasks).forEach(([subject, taskDesc]) => {
-      if (taskDesc.trim() && activeSubjects.includes(subject)) {
-        addHomework({
-          title: `Séance - ${subject}`,
-          subject: subject as any, 
-          description: taskDesc,
-          dueDate: new Date().toISOString().split('T')[0],
-          xpReward: 50,
-          assignedTo: ['all'],
-        });
-        homeworkCount++;
+  const generateReport = () => {
+    let reportText = "Bonjour,\n\nLa séance est terminée.\n\n";
+    let totalXpGiven = 0;
+
+    students.forEach(student => {
+      const behavior = studentBehavior[student.id] || "Comportement correct";
+      const progress = studentProgress[student.id] || {};
+      
+      const doneSubjects = activeSubjects.filter(sub => progress[sub] === 'done');
+      const leftSubjects = activeSubjects.filter(sub => progress[sub] === 'partial' || progress[sub] === 'none');
+      
+      const doneText = doneSubjects.length > 0 ? doneSubjects.join(", ") : "Aucun devoir finalisé";
+      const leftText = leftSubjects.length > 0 ? leftSubjects.join(", ") : "Tout a été terminé !";
+
+      reportText += `• ${student.name} :\n  Comportement : ${behavior}\n  A fait : ${doneText}\n  Reste à faire pour demain : ${leftText}\n\n`;
+
+      // Give 10 XP for each done subject
+      if (doneSubjects.length > 0) {
+        addBonusPoints(student.id, 0, doneSubjects.length * 10);
+        totalXpGiven += doneSubjects.length * 10;
       }
     });
+
+    const remuneration = sessionDuration * 17;
+
+    addTutorSession({
+      date: sessionDate,
+      durationHours: sessionDuration,
+      remuneration: remuneration,
+      reportText: reportText
+    });
+
+    reportText += "Bien à vous,\nVotre Tuteur.";
+    setReport(reportText);
     
-    setToastMsg(`${homeworkCount} tâche(s) ajoutée(s) aux devoirs de la classe !`);
+    setToastMsg(`Séance terminée ! Le compte rendu est prêt et ${totalXpGiven} XP ont été distribués aux élèves.`);
     setTimeout(() => setToastMsg(''), 4000);
   };
 
@@ -87,11 +112,39 @@ export const SessionPlanner: React.FC = () => {
     <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
       <div>
         <h3 className="font-semibold tracking-tight text-2xl font-bold text-black">
-          PLANIFICATION & SUIVI DE SÉANCE
+          CRÉER UNE SÉANCE
         </h3>
-        <p className="text-xs text-slate-700 font-bold mt-1">
-          1. Sélectionnez les matières. 2. Précisez le programme. 3. Suivez l'avancement des élèves en direct.
+        <p className="text-xs text-slate-700 font-bold mt-1 mb-4">
+          Préparez votre séance, suivez les élèves et générez le compte rendu.
         </p>
+
+        <div className="flex flex-wrap gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+          <div>
+            <label className="block text-xs font-bold text-slate-600 mb-1">Date de la séance</label>
+            <input 
+              type="date" 
+              value={sessionDate}
+              onChange={(e) => setSessionDate(e.target.value)}
+              className="px-3 py-1.5 border border-slate-200 rounded-md text-sm focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-600 mb-1">Durée (en heures)</label>
+            <input 
+              type="number" 
+              step="0.5"
+              min="0.5"
+              value={sessionDuration}
+              onChange={(e) => setSessionDuration(Number(e.target.value))}
+              className="px-3 py-1.5 border border-slate-200 rounded-md text-sm focus:outline-none focus:border-blue-500 w-24"
+            />
+          </div>
+          <div className="flex items-end">
+            <div className="px-3 py-1.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-md text-sm font-semibold">
+              Rémunération : {(sessionDuration * 17).toFixed(2)} €
+            </div>
+          </div>
+        </div>
       </div>
 
       {toastMsg && (
@@ -119,7 +172,7 @@ export const SessionPlanner: React.FC = () => {
         </div>
       </div>
 
-      {/* ETAPE 2: PROGRAMME (uniquement pour les matières sélectionnées) */}
+      {/* ETAPE 2: PROGRAMME */}
       {activeSubjects.length > 0 && (
         <div className="space-y-3">
           <h4 className="text-sm font-bold text-black">2. Programme (Pour toute la classe)</h4>
@@ -141,13 +194,13 @@ export const SessionPlanner: React.FC = () => {
         </div>
       )}
 
-      {/* ETAPE 3: TABLEAU DE SUIVI (Double entrée) */}
+      {/* ETAPE 3: TABLEAU DE SUIVI */}
       {activeSubjects.length > 0 && (
         <div className="space-y-3 pt-4 border-t border-slate-200">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <h4 className="text-sm font-bold text-black">3. Suivi des élèves (Tableau)</h4>
-            <button onClick={handlePlanSession} className="neo-btn-primary py-1.5 px-4 text-xs">
-              VALIDER & AJOUTER AUX DEVOIRS
+            <h4 className="text-sm font-bold text-black">3. Suivi et Comportement</h4>
+            <button onClick={generateReport} className="neo-btn-primary py-1.5 px-4 text-xs">
+              <FileText className="w-4 h-4" /> TERMINER LA SÉANCE
             </button>
           </div>
           
@@ -156,6 +209,7 @@ export const SessionPlanner: React.FC = () => {
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
                   <th className="p-3 border-r border-slate-200 sticky left-0 bg-slate-50 z-10 w-48">ÉLÈVE</th>
+                  <th className="p-3 border-r border-slate-200 w-48">COMPORTEMENT</th>
                   {activeSubjects.map(sub => (
                     <th key={sub} className="p-3 border-r border-slate-200 text-center min-w-[120px]">
                       {sub}
@@ -172,6 +226,15 @@ export const SessionPlanner: React.FC = () => {
                         <span className="font-semibold">{student.name}</span>
                       </div>
                     </td>
+                    <td className="p-2 border-r border-slate-200">
+                      <input 
+                        type="text" 
+                        placeholder="Ex: Agité..."
+                        value={studentBehavior[student.id] || ''}
+                        onChange={(e) => handleBehaviorChange(student.id, e.target.value)}
+                        className="w-full p-2 border border-slate-200 font-normal focus:outline-none focus:border-blue-500 rounded-sm bg-white"
+                      />
+                    </td>
                     {activeSubjects.map(sub => {
                       const status = studentProgress[student.id]?.[sub] || 'none';
                       const bgClass = status === 'done' ? 'bg-[#E8F5E9]' : status === 'partial' ? 'bg-blue-50' : 'bg-white hover:bg-slate-50';
@@ -185,7 +248,7 @@ export const SessionPlanner: React.FC = () => {
                           <div className="w-full h-full min-h-[3.5rem] flex items-center justify-center">
                             {status === 'done' && <CheckCircle2 className="w-6 h-6 text-emerald-600" />}
                             {status === 'partial' && <Minus className="w-8 h-8 text-blue-600" />}
-                            {status === 'none' && <div className="w-5 h-5 border-2 border-slate-300 rounded-sm"></div>}
+                            {status === 'none' && <div className="w-5 h-5 border-2 border-slate-300 rounded-sm bg-white"></div>}
                           </div>
                         </td>
                       );
@@ -198,9 +261,22 @@ export const SessionPlanner: React.FC = () => {
         </div>
       )}
 
+      {/* REPORT MODAL / DISPLAY */}
+      {report && (
+        <div className="mt-6 p-6 border border-slate-200 rounded-xl bg-slate-50 space-y-4">
+          <h4 className="font-semibold text-lg text-black">Compte-rendu de séance généré</h4>
+          <textarea 
+            className="w-full h-80 p-4 text-sm font-sans border border-slate-300 rounded-md focus:outline-none focus:border-blue-500 resize-none bg-white shadow-sm"
+            value={report}
+            onChange={(e) => setReport(e.target.value)}
+          />
+          <p className="text-xs text-slate-500 italic">Vous pouvez modifier ce texte puis le copier pour l'envoyer. L'XP a déjà été attribuée automatiquement aux élèves.</p>
+        </div>
+      )}
+
       {activeSubjects.length === 0 && (
-        <div className="text-center text-xs font-bold text-slate-500 py-8 italic border-2 border-dashed border-slate-300">
-          Sélectionnez au moins une matière pour commencer la planification.
+        <div className="text-center text-xs font-bold text-slate-500 py-8 italic border-2 border-dashed border-slate-300 rounded-xl">
+          Sélectionnez au moins une matière pour préparer la séance.
         </div>
       )}
     </div>
