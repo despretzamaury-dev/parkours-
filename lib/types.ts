@@ -80,7 +80,9 @@ export interface TutorSession {
 
 export interface TutorSchedule {
   id: string;
-  date: string;
+  type: 'mission' | 'remplacement';
+  date?: string;
+  dayOfWeek?: number;
   startTime: string;
   endTime: string;
 }

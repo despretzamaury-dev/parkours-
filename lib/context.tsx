@@ -35,6 +35,7 @@ interface ParkoursContextType {
   addTutorSession: (session: Omit<TutorSession, 'id'>) => void;
   addTutorSchedule: (schedule: Omit<TutorSchedule, 'id'>) => void;
   deleteTutorSchedule: (id: string) => void;
+  addUser: (user: Omit<UserProfile, 'id' | 'totalXp' | 'level' | 'streak' | 'badges' | 'points'>) => void;
   resetToDemoData: () => void;
 }
 
@@ -337,6 +338,20 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
     setTutorSchedules(prev => prev.filter(s => s.id !== id));
   };
 
+  const addUser = (newUser: Omit<UserProfile, 'id' | 'totalXp' | 'level' | 'streak' | 'badges' | 'points'>) => {
+    const created: UserProfile = {
+      ...newUser,
+      id: `student-${Date.now()}`,
+      points: 0,
+      totalXp: 0,
+      level: 1,
+      streak: 0,
+      badges: [],
+      role: 'student'
+    };
+    setUsers(prev => [...prev, created]);
+  };
+
   const resetToDemoData = () => {
     setUsers(INITIAL_USERS);
     setHomeworks(INITIAL_HOMEWORK);
@@ -375,6 +390,7 @@ export function ParkoursProvider({ children }: { children: React.ReactNode }) {
         addTutorSession,
         addTutorSchedule,
         deleteTutorSchedule,
+        addUser,
         addBonusPoints,
         resetToDemoData,
       }}

@@ -31,6 +31,36 @@ export const SessionPlanner: React.FC = () => {
   
   const [toastMsg, setToastMsg] = useState('');
 
+  React.useEffect(() => {
+    const saved = localStorage.getItem('parkours_session_planner_state');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.activeSubjects) setActiveSubjects(data.activeSubjects);
+        if (data.classTasks) setClassTasks(data.classTasks);
+        if (data.studentProgress) setStudentProgress(data.studentProgress);
+        if (data.studentBehavior) setStudentBehavior(data.studentBehavior);
+      } catch (e) {}
+    }
+  }, []);
+
+  React.useEffect(() => {
+    localStorage.setItem('parkours_session_planner_state', JSON.stringify({
+      activeSubjects, classTasks, studentProgress, studentBehavior
+    }));
+  }, [activeSubjects, classTasks, studentProgress, studentBehavior]);
+
+  const resetPlanner = () => {
+    if (confirm('Voulez-vous vraiment effacer le tableau pour préparer une nouvelle séance ?')) {
+      setActiveSubjects([]);
+      setClassTasks({});
+      setStudentProgress({});
+      setStudentBehavior({});
+      setReport(null);
+      localStorage.removeItem('parkours_session_planner_state');
+    }
+  };
+
   const toggleSubject = (sub: string) => {
     setActiveSubjects(prev => 
       prev.includes(sub) ? prev.filter(s => s !== sub) : [...prev, sub]
@@ -110,15 +140,24 @@ export const SessionPlanner: React.FC = () => {
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
-      <div>
-        <h3 className="font-semibold tracking-tight text-2xl font-bold text-black">
-          CRÉER UNE SÉANCE
-        </h3>
-        <p className="text-xs text-slate-700 font-bold mt-1 mb-4">
-          Préparez votre séance, suivez les élèves et générez le compte rendu.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-semibold tracking-tight text-2xl font-bold text-black">
+            CRÉER UNE SÉANCE
+          </h3>
+          <p className="text-xs text-slate-700 font-bold mt-1 mb-4">
+            Préparez votre séance, suivez les élèves et générez le compte rendu.
+          </p>
+        </div>
+        <button 
+          onClick={resetPlanner}
+          className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors border border-slate-200 hover:border-red-200 hover:bg-red-50 rounded-md px-3 py-2 shrink-0"
+        >
+          Effacer le tableau
+        </button>
+      </div>
 
-        <div className="flex flex-wrap gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+      <div className="flex flex-wrap gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
           <div>
             <label className="block text-xs font-bold text-slate-600 mb-1">Date de la séance</label>
             <input 
@@ -145,7 +184,6 @@ export const SessionPlanner: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
 
       {toastMsg && (
         <div className="p-3 bg-[#E8F5E9] border border-slate-200 text-xs font-bold text-emerald-950 flex items-center gap-2">

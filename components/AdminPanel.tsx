@@ -17,6 +17,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ setActiveTab }) => {
 
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [studentNotes, setStudentNotes] = useState<Record<string, string>>({});
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserGroup, setNewUserGroup] = useState('Tutorat 5ème');
+  const { addUser } = useParkours();
 
   useEffect(() => {
     const saved = localStorage.getItem('parkours_student_notes');
@@ -71,13 +75,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ setActiveTab }) => {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
-        <h3 className="font-semibold tracking-tight text-2xl font-bold text-black flex items-center gap-2">
-          <UserCheck className="w-6 h-6 text-blue-600" />
-          PROFILS & DIFFICULTÉS
-        </h3>
-        <p className="text-xs text-slate-700 font-bold">
-          Notez ici les particularités de chaque élève pour adapter votre pédagogie (ex: TDAH, difficultés en maths, etc.)
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-semibold tracking-tight text-2xl font-bold text-black flex items-center gap-2">
+              <UserCheck className="w-6 h-6 text-blue-600" />
+              PROFILS & DIFFICULTÉS
+            </h3>
+            <p className="text-xs text-slate-700 font-bold mt-1">
+              Notez ici les particularités de chaque élève pour adapter votre pédagogie (ex: TDAH, difficultés en maths, etc.)
+            </p>
+          </div>
+          <button 
+            onClick={() => setShowAddUserModal(true)}
+            className="neo-btn-secondary py-2 px-4 text-xs font-bold shrink-0"
+          >
+            + Ajouter un élève
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           {students.map((student) => (
@@ -107,6 +121,76 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ setActiveTab }) => {
           ))}
         </div>
       </div>
+
+      {showAddUserModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm font-sans">
+          <div className="bg-white border border-slate-200 w-full max-w-md p-6 shadow-lg rounded-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h2 className="font-semibold tracking-tight text-2xl font-bold text-black">
+                NOUVEL ÉLÈVE
+              </h2>
+              <button
+                onClick={() => setShowAddUserModal(false)}
+                className="text-black font-bold text-xl hover:text-blue-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                addUser({
+                  name: newUserName,
+                  email: newUserName.toLowerCase().replace(' ', '.') + '@eleve.fr',
+                  avatar: '👤',
+                  classGroup: newUserGroup,
+                  role: 'student'
+                });
+                setNewUserName('');
+                setShowAddUserModal(false);
+              }} 
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-slate-700">PRÉNOM ET NOM *</label>
+                <input
+                  type="text"
+                  required
+                  value={newUserName}
+                  onChange={(e) => setNewUserName(e.target.value)}
+                  placeholder="Ex: Léo Martin"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-semibold focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-slate-700">GROUPE / NIVEAU *</label>
+                <input
+                  type="text"
+                  required
+                  value={newUserGroup}
+                  onChange={(e) => setNewUserGroup(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-semibold focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setShowAddUserModal(false)}
+                  className="px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+                >
+                  ANNULER
+                </button>
+                <button type="submit" className="neo-btn-primary py-2 px-4 text-sm">
+                  CRÉER L'ÉLÈVE
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
